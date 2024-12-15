@@ -5,10 +5,9 @@ import requests
 from multiprocessing import Process, Manager
 import random
 from colorama import Fore, Back, Style
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--proxylist', type=str, help='Proxy list', required=True)
-parser.add_argument('-t', '--proxytype', type=str, help='Proxy Type (socks5 or http)', required=True)
+parser.add_argument('-t', '--proxytype', choices=['http', 'socks5'], help='Proxy Type (socks5 or http)', required=True)
 parser.add_argument('-o', '--outfile', type=str, help='Output file', required=True)
 parser.add_argument('-n', '--processes', type=int, help='Number of processes', required=True)
 args = parser.parse_args()
@@ -16,11 +15,7 @@ proxylist = args.proxylist
 outfile = args.outfile
 proxytype = args.proxytype
 num_processes = args.processes
-if proxytype !="http" and proxytype !="socks5":
-    print(f"{proxytype} is not a valid proxy type!")
-    parser.print_help()
-    exit()
-URLs = ['https://icanhazip.com', 'https://eth0.me', 'https://ifconfig.me', 'https://ipinfo.io/ip', 'https://wtfismyip.com/text', 'https://ifconfig.io', 'https://ipecho.net/plain', 'https://ipnr.dk', 'https://api.ipify.org', 'https://whatismyip.akamai.com', 'https://am.i.mullvad.net/ip']
+URLs = ['https://icanhazip.com', 'https://eth0.me', 'https://ifconfig.me', 'https://ipinfo.io/ip', 'https://wtfismyip.com/text', 'https://ifconfig.io', 'https://ipecho.net/plain', 'https://api.ipify.org', 'https://whatismyip.akamai.com', 'https://am.i.mullvad.net/ip', 'http://ip-api.com/line/?fields=query', 'https://wgetip.com', 'https://ipcalf.com', 'https://ipaddy.net', 'https://checkip.amazonaws.com', 'https://ip.liquidweb.com', 'https://ipaddress.sh']
 to = 5
 
 ASCII = Fore.BLUE+r"""
@@ -41,14 +36,11 @@ ASCII = Fore.BLUE+r"""
 def check_proxy(proxy, valid_proxies, bad_proxies, good_count, bad_count, checked_count):
     try:
         session = requests.Session()
-        session.headers['User-Agent'] = 'User-Agent: curl/8.9.1'
+        session.headers['User-Agent'] = 'User-Agent: curl/8.11.0'
         session.max_redirects = 0
         proxy = proxy.split('\n', 1)[0]
         random_url = random.choice(URLs)
-        if proxytype == "http":
-            request = session.get(random_url, proxies={"http": proxy, "https": proxy}, timeout=to, allow_redirects=False)
-        elif proxytype == "socks5":
-            request = session.get(random_url, proxies={"http": "socks5://"+proxy, "https": "socks5://"+proxy}, timeout=to, allow_redirects=False)
+        request = session.get(random_url, proxies={"http": f"{proxytype}://{proxy}", "https": f"{proxytype}://{proxy}"}, timeout=to, allow_redirects=False)
         proxyip = (request.text).strip()
         onlyip = "".join(i for i in proxy if i in (string.digits + ".:")).strip(":").split(":")[0]
         if proxyip == onlyip:
