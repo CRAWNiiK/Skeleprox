@@ -15,7 +15,7 @@ proxylist = args.proxylist
 outfile = args.outfile
 proxytype = args.proxytype
 num_processes = args.processes
-URLs = ['https://icanhazip.com', 'https://eth0.me', 'https://ifconfig.me', 'https://ipinfo.io/ip', 'https://wtfismyip.com/text', 'https://ifconfig.io', 'https://ipecho.net/plain', 'https://api.ipify.org', 'https://whatismyip.akamai.com', 'https://am.i.mullvad.net/ip', 'http://ip-api.com/line/?fields=query', 'https://wgetip.com', 'https://ipcalf.com', 'https://ipaddy.net', 'https://checkip.amazonaws.com', 'https://ip.liquidweb.com', 'https://ipaddress.sh']
+URLs = ['https://icanhazip.com', 'https://eth0.me', 'https://ifconfig.me', 'https://ipinfo.io/ip', 'https://wtfismyip.com/text', 'https://ifconfig.io', 'https://ipecho.net/plain', 'https://api.ipify.org', 'https://whatismyip.akamai.com', 'https://am.i.mullvad.net/ip', 'http://ip-api.com/line/?fields=query', 'https://wgetip.com', 'https://ipcalf.com', 'https://ipaddy.net', 'https://checkip.amazonaws.com', 'https://ip.liquidweb.com', 'https://ipaddress.sh', 'https://ipgive.me', 'https://gifstuffapi.com/checkip/']
 to = 5
 
 ASCII = Fore.BLUE+r"""
@@ -36,7 +36,7 @@ ASCII = Fore.BLUE+r"""
 def check_proxy(proxy, valid_proxies, bad_proxies, good_count, bad_count, checked_count):
     try:
         session = requests.Session()
-        session.headers['User-Agent'] = 'User-Agent: curl/8.11.0'
+        session.headers['User-Agent'] = 'curl/8.12.1'
         session.max_redirects = 0
         proxy = proxy.split('\n', 1)[0]
         random_url = random.choice(URLs)
